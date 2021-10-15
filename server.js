@@ -5,8 +5,9 @@
 import Express from "express";
 import { MongoClient } from "mongodb";
 
-const stringConexion = /*"mongodb+srv://riky:<password>@ecotextil.upg8z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";*/
-"mongodb+srv://admin:admin@EcoTextil.pd6q6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const stringConexion =
+  "mongodb+srv://riky:<password>@ecotextil.upg8z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+/*"mongodb+srv://admin:admin@EcoTextil.pd6q6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";*/
 
 const client = new MongoClient(stringConexion, {
   useNewUrlParser: true,
@@ -20,7 +21,18 @@ app.use(Express.json());
 
 app.get("/productos", (req, res) => {
   console.log("alguien hizo get en la ruta /productos");
-  const productos = [
+  conexion
+    .collection("productos")
+    .find({})
+    .limit(50)
+    .toArray((err, result) => {
+      if (err) {
+        res.status(400).send("Error consultando los vehiculos");
+      } else {
+        res.json(result);
+      }
+    });
+  /*const productos = [
     {
       idProducto: 1,
       descripcion: "tela a",
@@ -45,12 +57,13 @@ app.get("/productos", (req, res) => {
       valorUnit: 10000,
       estado: "disponible",
     },
-  ];
+  ];*/
   res.send(productos);
 });
 
 app.post("/productos/nuevo", (req, res) => {
   //crear usuario en la DB
+  console.log(req);
   const datosProducto = req.body;
   console.log("llaves: ", Object.keys(datosProducto));
   if (
@@ -60,8 +73,8 @@ app.post("/productos/nuevo", (req, res) => {
     Object.keys(datosProducto).includes("estado")
   ) {
     //implementar código para crear productos
-    conexion.collection("Productos").insertOne(datosProducto,(err, result)=>{
-      if(err){
+    conexion.collection("productos").insertOne(datosProducto, (err, result) => {
+      if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
@@ -81,7 +94,7 @@ const main = () => {
     if (err) {
       console.error("Error conectando a la base de datos");
     }
-    conexion = client.db("EcoTextil").collection("Productos");
+    conexion = client.db("ecotextil").collection("productos");
     console.log("conexión exitosa");
     return app.listen(5000, () => {
       console.log("Escuchando puerto 5000");
