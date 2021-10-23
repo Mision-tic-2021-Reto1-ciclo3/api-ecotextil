@@ -3,20 +3,21 @@
 
 //import express manera actual
 import Express from "express";
-import { MongoClient, ObjectId } from "mongodb";
-import Cors from "cors";
 
-const stringConexion =
-  "mongodb+srv://riky:ecotextil@ecotextil.upg8z.mongodb.net/test?authSource=admin&replicaSet=atlas-udecoi-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
+import dotenv from 'dotenv';
+import Cors from "cors";
+import {conectarBD, getDB} from './db/db.js';
+
+dotenv.config({ path: './.env'});
+
+
+ /* "mongodb+srv://riky:ecotextil@ecotextil.upg8z.mongodb.net/test?authSource=admin&replicaSet=atlas-udecoi-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
 /*"mongodb+srv://riky:<ecotextil>@ecotextil.upg8z.mongodb.net/EcoTextil?retryWrites=true&w=majority";
   /*"mongodb+srv://admin:admin@EcoTextil.pd6q6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";*/
 
-const client = new MongoClient(stringConexion, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
-let baseDeDatos;
+
+
 
 const app = Express();
 app.use(Express.json());
@@ -24,6 +25,7 @@ app.use(Cors());
 
 app.get("/productos", (req, res) => {
   console.log("Alguien hizo get en la ruta /productos");
+  const baseDeDatos = getDB();
   baseDeDatos
     .collection("productos")
     .find({})
@@ -49,6 +51,7 @@ app.post("/productos/nuevo", (req, res) => {
       Object.keys(datosProducto).includes("valorUnit") &&
       Object.keys(datosProducto).includes("estado")
     ) {
+      const baseDeDatos = getDB();
       //implementar código para crear productos
       baseDeDatos
         .collection("productos")
@@ -79,6 +82,7 @@ app.patch("/productos/editar", (req, res) => {
   const operacion = {
     $set: edicion,
   };
+  const baseDeDatos = getDB();
   baseDeDatos
     .collection("productos")
     .findOneAndUpdate(
@@ -96,9 +100,10 @@ app.patch("/productos/editar", (req, res) => {
       }
     );
 });
-
+//Eliminar productos
 app.delete("/productos/eliminar", (req, res) => {
   const filtroProducto = { _id: new ObjectId(req.body.id) };
+  const baseDeDatos = getDB();
   baseDeDatos
     .collection("productos")
     .deleteOne(filtroProducto, (err, result) => {
@@ -122,15 +127,8 @@ async function main() {
   return "done.";
 }*/
 const main = () => {
-  client.connect((err, db) => {
-    if (err) {
-      console.error("Error conectando a la base de datos");
-    }
-    baseDeDatos = client.db("EcoTextil");
-    console.log("conexión exitosa");
-    return app.listen(5000, () => {
-      console.log("Escuchando puerto 5000");
-    });
+  return app.listen(process.env.PORT, () => {
+    console.log(`Escuchando puerto ${process.env.PORT}`);
   });
 };
 
@@ -138,5 +136,4 @@ const main = () => {
   .then(console.log)
   .catch(console.error)
   .finally(() => client.close());*/
-
-main();
+conectarBD(main);
