@@ -28,11 +28,11 @@ const crearProducto = async (datosProducto, callback) => {
   }
 };
 
-const editarProducto = async (edicion, callback) => {
+const editarProducto = async (id, edicion, callback) => {
   //const edicion = req.body;
   //filtro para realizar actualizaciones
-  const filtroProducto = { _id: new ObjectId(edicion.id) };
-  delete edicion.id;
+  const filtroProducto = { _id: new ObjectId(id) };
+
   const operacion = {
     $set: edicion,
   };
