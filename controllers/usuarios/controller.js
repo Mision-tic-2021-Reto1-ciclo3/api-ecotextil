@@ -15,8 +15,8 @@ const crearUsuario = async (datosUsuario, callback) => {
   if (
     Object.keys(datosUsuario).includes("nombres") &&
     Object.keys(datosUsuario).includes("correo") &&
-    Object.keys(datosUsuario).includes("password") &&
-    Object.keys(datosUsuario).includes("rol")
+    Object.keys(datosUsuario).includes("rol") &&
+    Object.keys(datosUsuario).includes("estado")
   ) {
     const baseDeDatos = getDB();
     //implementar código para crear usuarios

@@ -20,9 +20,9 @@ const crearVenta = async (datosVenta, callback) => {
     Object.keys(datosVenta).includes("idCliente") &&
     Object.keys(datosVenta).includes("nombreCliente") &&
     Object.keys(datosVenta).includes("fechaVenta") &&
-    Object.keys(datosVenta).includes("valTotalVenta") &&
+    Object.keys(datosVenta).includes("vendedor") &&
     Object.keys(datosVenta).includes("estadoVenta") &&
-    Object.keys(datosVenta).includes("vendedor")
+    Object.keys(datosVenta).includes("valTotalVenta") 
   ) {
     const baseDeDatos = getDB();
     //implementar código para crear ventas
